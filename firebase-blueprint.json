@@ -1,0 +1,209 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 100 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["email"]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Administrator authorized user record",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["admin", "superadmin"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Food menu category",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "slug": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "displayOrder": { "type": "number" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["name", "displayOrder", "active"]
+    },
+    "MenuItem": {
+      "title": "MenuItem",
+      "description": "Food menu item with description, pricing, and variants",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "price": { "type": "number" },
+        "categoryId": { "type": "string", "maxLength": 100 },
+        "categoryName": { "type": "string", "maxLength": 100 },
+        "imageUrl": { "type": "string", "maxLength": 1000 },
+        "available": { "type": "boolean" },
+        "spiceLevel": { "type": "number" },
+        "displayOrder": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["name", "categoryId", "available"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer food order",
+      "type": "object",
+      "properties": {
+        "orderNumber": { "type": "string", "maxLength": 50 },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerEmail": { "type": "string", "maxLength": 100 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "orderType": { "type": "string", "enum": ["collection", "delivery"] },
+        "subtotalPence": { "type": "number" },
+        "discountPence": { "type": "number" },
+        "deliveryFeePence": { "type": "number" },
+        "totalPence": { "type": "number" },
+        "paymentStatus": { "type": "string", "enum": ["pending", "paid", "failed", "refunded"] },
+        "orderStatus": { "type": "string", "enum": ["pending", "confirmed", "preparing", "ready_for_collection", "out_for_delivery", "completed", "cancelled"] },
+        "collectionTime": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["orderNumber", "customerName", "customerEmail", "customerPhone", "orderType", "totalPence", "paymentStatus", "orderStatus"]
+    },
+    "Reservation": {
+      "title": "Reservation",
+      "description": "Table reservation request",
+      "type": "object",
+      "properties": {
+        "reservationNumber": { "type": "string", "maxLength": 50 },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerEmail": { "type": "string", "maxLength": 100 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "date": { "type": "string", "maxLength": 20 },
+        "time": { "type": "string", "maxLength": 20 },
+        "guests": { "type": "number" },
+        "specialRequests": { "type": "string", "maxLength": 500 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "completed", "cancelled"] },
+        "internalNotes": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["reservationNumber", "customerName", "customerEmail", "customerPhone", "date", "time", "guests", "status"]
+    },
+    "FullyBookedDate": {
+      "title": "FullyBookedDate",
+      "description": "Date marked as fully booked for table reservations",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "maxLength": 20 },
+        "isFullyBooked": { "type": "boolean" },
+        "note": { "type": "string", "maxLength": 200 },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["date", "isFullyBooked"]
+    },
+    "CustomerMessage": {
+      "title": "CustomerMessage",
+      "description": "Complaints, suggestions, and customer feedback message",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "subject": { "type": "string", "maxLength": 200 },
+        "message": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["unread", "read", "archived"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["name", "email", "subject", "message"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer testimonial and review",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string", "maxLength": 100 },
+        "rating": { "type": "number" },
+        "reviewText": { "type": "string", "maxLength": 1000 },
+        "photoUrl": { "type": "string", "maxLength": 500 },
+        "featured": { "type": "boolean" },
+        "date": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["customerName", "rating", "reviewText"]
+    },
+    "WebsiteSettings": {
+      "title": "WebsiteSettings",
+      "description": "General website and restaurant configuration",
+      "type": "object",
+      "properties": {
+        "heroTitle": { "type": "string", "maxLength": 200 },
+        "heroSubtitle": { "type": "string", "maxLength": 200 },
+        "heroDescription": { "type": "string", "maxLength": 1000 },
+        "heroVideoUrl": { "type": "string", "maxLength": 500 },
+        "heroImageUrl": { "type": "string", "maxLength": 500 },
+        "collectionDiscountPercent": { "type": "number" },
+        "deliveryEnabled": { "type": "boolean" },
+        "feedbackEmail": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["heroTitle"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles restricted to owner and admin"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminUser",
+      "description": "Administrator allowlist records"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Food menu categories public read, admin write"
+    },
+    "/menuItems/{menuItemId}": {
+      "schema": "MenuItem",
+      "description": "Food menu items public read, admin write"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders created by customer or guest, viewable by owner/admin"
+    },
+    "/reservations/{reservationId}": {
+      "schema": "Reservation",
+      "description": "Table reservations created by customers, managed by admin"
+    },
+    "/fullyBookedDates/{dateId}": {
+      "schema": "FullyBookedDate",
+      "description": "Fully booked dates public read, admin write"
+    },
+    "/customerMessages/{messageId}": {
+      "schema": "CustomerMessage",
+      "description": "Complaints and feedback public create, admin read/write"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Customer reviews public read, admin write"
+    },
+    "/websiteSettings/{settingId}": {
+      "schema": "WebsiteSettings",
+      "description": "Global website settings public read, admin write"
+    }
+  }
+}

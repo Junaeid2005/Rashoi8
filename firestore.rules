@@ -1,0 +1,107 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // Verified Admin helper: either registered in /admins/{uid} or matches bootstrapped owner email
+    function isAdmin() {
+      return isVerified() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email.lower() == 'bluepeakzone2005@gmail.com'
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) &&
+        request.resource.data.keys().hasAll(['email']) &&
+        !request.resource.data.keys().hasAny(['role', 'isAdmin']);
+      allow update: if isOwner(userId) &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isAdmin']);
+      allow delete: if isAdmin();
+    }
+
+    // Admin directory
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Categories: public read, admin write
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Menu items: public read, admin write
+    match /menuItems/{menuItemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Website Settings: public read, admin write
+    match /websiteSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Fully Booked Dates: public read, admin write
+    match /fullyBookedDates/{dateId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Customer Reviews: public read, admin write
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Customer Messages (Feedback & Complaints): public create with basic constraints, admin read/write
+    match /customerMessages/{messageId} {
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'subject', 'message']) &&
+        request.resource.data.name is string && request.resource.data.name.size() <= 100 &&
+        request.resource.data.email is string && request.resource.data.email.size() <= 100 &&
+        request.resource.data.subject is string && request.resource.data.subject.size() <= 200 &&
+        request.resource.data.message is string && request.resource.data.message.size() <= 3000;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Reservations: customers create; customers view their own; admins manage all
+    match /reservations/{reservationId} {
+      allow create: if request.resource.data.keys().hasAll(['reservationNumber', 'customerName', 'customerEmail', 'customerPhone', 'date', 'time', 'guests', 'status']) &&
+        request.resource.data.customerName is string && request.resource.data.customerName.size() <= 100 &&
+        request.resource.data.guests is number && request.resource.data.guests >= 1 && request.resource.data.guests <= 50;
+      allow get: if isAdmin() || (isSignedIn() && resource.data.customerId == request.auth.uid);
+      allow list: if isAdmin() || (isSignedIn() && resource.data.customerId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // Orders: customers create order; view their own; admin updates status
+    match /orders/{orderId} {
+      allow create: if request.resource.data.keys().hasAll(['orderNumber', 'customerName', 'customerEmail', 'customerPhone', 'orderType', 'totalPence', 'paymentStatus', 'orderStatus']) &&
+        request.resource.data.customerName is string && request.resource.data.customerName.size() <= 100 &&
+        request.resource.data.totalPence is number && request.resource.data.totalPence >= 0;
+      allow get: if isAdmin() || (isSignedIn() && resource.data.customerId == request.auth.uid);
+      allow list: if isAdmin() || (isSignedIn() && resource.data.customerId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+  }
+}

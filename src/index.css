@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-outfit: "Outfit", system-ui, sans-serif;
+  --font-jakarta: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-inter: "Inter", system-ui, sans-serif;
+
+  --color-forest-primary: #16462F;
+  --color-forest-dark: #113725;
+  --color-forest-light: #1E5C3E;
+  --color-forest-soft: #23583C;
+  --color-mint-accent: #E8F2EC;
+  --color-mint-badge: #D1E5DA;
+  --color-gold-accent: #E5A93C;
+  --color-cream-bg: #F8FAF7;
+  --color-card-bg: #FFFFFF;
+  --color-text-main: #133E29;
+  --color-text-muted: #5E7A6B;
+  --color-border-subtle: #E3ECE5;
+}
+
+body {
+  font-family: var(--font-outfit);
+  background-color: #F8FAF7;
+  color: #133E29;
+  min-height: 100vh;
+}
+
+/* Custom font utility classes */
+.font-outfit {
+  font-family: var(--font-outfit);
+}
+
+.font-jakarta {
+  font-family: var(--font-jakarta);
+}
+
+.font-inter {
+  font-family: var(--font-inter);
+}
+
+/* Smooth scrollbar in Dine Divine Forest Green */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #F8FAF7;
+}
+::-webkit-scrollbar-thumb {
+  background: #16462F;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #113725;
+}
+
+
